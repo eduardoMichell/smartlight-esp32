@@ -1,15 +1,13 @@
-//PINS
 const int PIN_TO_SENSOR = 27;
 const int PIN_TO_LED = 26;
 const int PIN_TO_LIGHT_SENSOR = 25;
 const int PIN_TO_BUTTON = 18;
-// STATES
-int pinStateCurrent   = LOW;  // current state of pin
-int pinStatePrevious  = LOW;  // previous state of pin
 
-int lastButtonState = HIGH; // the previous state from the input pin
-int currentButtonState;     // the current reading from the input pin
-int buttonState = LOW;     // the current reading from the input pin
+int pinStateCurrent   = LOW; 
+int pinStatePrevious  = LOW; 
+int lastButtonState = HIGH; 
+int currentButtonState;     
+int buttonState = LOW;     
 
 const int freq = 9000;
 const int ledChannel = 0;
