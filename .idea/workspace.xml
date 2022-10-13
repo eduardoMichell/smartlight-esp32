@@ -22,7 +22,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ogg" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -35,6 +35,7 @@
       <option name="presentableId" value="Default" />
       <updated>1665495142483</updated>
       <workItem from="1665495144041" duration="177000" />
+      <workItem from="1665504366550" duration="314000" />
     </task>
     <servers />
   </component>
