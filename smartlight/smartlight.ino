@@ -26,8 +26,6 @@ const int freq = 9000;
 const int ledChannel = 0;
 const int resolution = 10;
 
-//acendimento automatico, acesder e apagar a lampada, ajuste automatico de intensidade, ajustar luminosidade
-
 void setup() {
   Serial.begin(115200);
   pinMode(PIN_TO_LED, OUTPUT);
@@ -45,11 +43,8 @@ void setup() {
   server.begin();
   Serial.println("HTTP server started");
 
-
-  
   WiFiClient client;
   HTTPClient http;
-  
 }
 
 void loop() {
