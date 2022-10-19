@@ -17,6 +17,7 @@ WebServer server(80);
 const int PIN_TO_LIGHT_SENSOR = 32;
 const int PIN_TO_LED = 26;
 const int PIN_TO_BUTTON = 33;
+const int PIN_TO_PIR_SENSOR = 35;
 
 // variables
 bool is_automatic_bright = true;
@@ -25,15 +26,32 @@ int led_bright = 0;
 int button_state = HIGH;
 int last_button_state = HIGH;
 
-// delay control
-unsigned long current_time;
-unsigned long last_time = 200;
+bool is_motion_detection_active = false;
+bool had_motion_detected = false;
+unsigned long last_motion_detected = 0;
+int motion_check_interval = 5000; // interval between motion checks
+
+
+unsigned long now = millis();
 
 
 // pwd setup
 const int led_pwm_frequency = 9000;
 const int led_pwm_channel = 0;
 const int led_pwm_resolution = 10;
+
+
+// this function is called every time that a movement is detected
+void IRAM_ATTR onMotionDetected() {
+  if (is_motion_detection_active) {
+    Serial.println("Motion Detected");
+    had_motion_detected = true;
+    last_motion_detected = millis();  
+
+    // turn on the light
+    is_automatic_bright = true;
+  }
+}
 
 
 // setup API routes
@@ -77,6 +95,36 @@ void setup_routing() {
       server.send(200, "text/plain", value);
     });
 
+    // active and inactive motion detection mode
+    server.on("/motion-detection", HTTP_POST, []() {
+      String value = server.arg("plain");
+
+      Serial.print("is motion detection active");
+      Serial.println(value);
+
+      if (value == "true") {
+        Serial.println("Enter on Motion detection mode");
+        is_motion_detection_active = true;  
+        onMotionDetected();
+      } else {
+        Serial.println("Out of motion detection mode");
+        is_motion_detection_active = false;  
+      }
+
+      server.send(200, "text/plain", value);
+    });
+
+    // define motion detection delay
+    server.on("/motion-detection-delay", HTTP_POST, []() {
+      String value = server.arg("plain");
+
+      Serial.print("Motion detection new delay is: ");
+      Serial.println(value);
+
+      motion_check_interval = value.toInt();
+
+      server.send(200, "text/plain", value);
+    });
 
 }
 
@@ -87,10 +135,14 @@ void setup() {
   // setup pins
   pinMode(PIN_TO_LED, OUTPUT);
   pinMode(PIN_TO_BUTTON, INPUT_PULLUP);
+  pinMode(PIN_TO_PIR_SENSOR, INPUT_PULLUP);
 
   // setup pwm
   ledcSetup(led_pwm_channel, led_pwm_frequency, led_pwm_resolution);
   ledcAttachPin(PIN_TO_LED, led_pwm_channel);
+
+  // setup interrup function
+   attachInterrupt(digitalPinToInterrupt(PIN_TO_PIR_SENSOR), onMotionDetected, FALLING);
 
 
   // wifi setup
@@ -114,6 +166,8 @@ void setup() {
 }
 
 void loop() {
+  now = millis();
+  
   server.handleClient();
 
   // --- start led bright
@@ -144,6 +198,20 @@ void loop() {
 
   last_button_state = current_button_state;
   // --- end button
+
+  // --- start PIT sensor
+  
+  // clear has movement after delay 
+  if (is_motion_detection_active && had_motion_detected && (now - last_motion_detected > motion_check_interval)) {
+    Serial.println("Cleaning motion detected");
+    had_motion_detected = false;
+    last_motion_detected = 0;
+
+    // turn off the light
+    is_automatic_bright = false;
+    led_bright = 0;
+  }
+  // --- end PIR sensor
 
 }
 
