@@ -14,7 +14,7 @@ IPAddress subnet(255, 255, 255, 0);
 WebServer server(80);
 
 // pins
-const int PIN_TO_LIGHT_SENSOR = 25;
+const int PIN_TO_LIGHT_SENSOR = 32;
 const int PIN_TO_LED = 26;
 const int PIN_TO_BUTTON = 33;
 
@@ -143,7 +143,6 @@ void loop() {
   }
 
   last_button_state = current_button_state;
-
   // --- end button
 
 }
