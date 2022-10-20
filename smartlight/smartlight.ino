@@ -59,12 +59,14 @@ void setup_routing() {
 
     // app root page
     server.on("/", HTTP_GET, []() {
-      server.send(200, "text/html","<!DOCTYPE html><html lang='pt-BR'><head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width, initial-scale=1'> <title>Smart Light</title></head><body> <section class='section'> <div class='container'> <h1 class='title'> Smart Light </h1> <p class='subtitle'> Controle sua lâmpada aqui! </p></div></section> <section class='section'> <div class='container'> <form> <div class='field'> <label class='label'>Luminosidade:</label> <div class='control'> <input id='lumi' class='input' type='number' max='1024' min='0' placeholder='Ex.: 50' onchange='onChangeLuminosityValue'/> </div></div><div class='field is-grouped'> <div class='control'> <button class='button is-success' type='button' onclick='sendChangeLuminosity()'> Enviar </button> </div></div><div class='is-divider'></div><div class='field'> <div class='control'> <button class='button is-success' type='button' onclick='sendEnableLDR()'> Ativar sensor de luminosidade </button> </div></div><div class='is-divider'></div></form> </div></section></body><script>function onChangeLuminosityValue(){console.log('safado');}async function sendEnableLDR(){const url='http://192.168.1.1/led-auto-bright'; const options={method: 'POST', mode: 'no-cors', cache: 'no-cache', body: true,}; const response=await fetch(url, options); console.log(response);}async function sendChangeLuminosity(){const luminosityInput=document.getElementById('lumi'); if (!luminosityInput){return;}if (luminosityInput.value > 1024){alert('O valor de ser entre 0 e 1024'); return;}const url='http://192.168.1.1/led-bright'; const options={method: 'POST', mode: 'no-cors', cache: 'no-cache', body: luminosityInput.value,}; const response=await fetch(url, options); console.log(response);}</script><style>body,button,input,optgroup,select,textarea{font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;}</style></html>");
+      server.send(200, "text/html","<!DOCTYPE html><html lang='pt-BR'><head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width, initial-scale=1'> <title>Smart Light</title></head><body> <iframe name='dummyframe' id='dummyframe' style='display: none;'></iframe> <div> <h1> Smart Light </h1> <label> Controle sua lâmpada aqui! </label> </div><br/> <form action='http://192.168.1.1/led-bright' method='post' target='dummyframe' enctype='text/plain'> <label for='ledBright'>Luminosidade:</label><br><input type='number' id='ledBright' name='v' min='0' max='1024' value='1024'> <input type='submit' value='Enviar'> </form> <br/> <form action='http://192.168.1.1/led-auto-bright' method='post' target='dummyframe' enctype='text/plain'> <button type='submit' name='v' value='true'>Ativar ajuste automatico da luminosidade</button> </form> <br/> <form action='http://192.168.1.1/motion-detection' method='post' target='dummyframe' enctype='text/plain'> <button type='submit' name='v' value='true'>Ativar o controle de presença</button> <button type='submit' name='v' value='false'>Desativar o controle de presença</button> </form> <br/> <form action='http://192.168.1.1/motion-detection-delay' method='post' target='dummyframe' enctype='text/plain'> <label for='detectionDelay'>Intervalo para verificação de presença:</label><br><input type='number' id='detectionDelay' name='v' min='0' max='60000' value='5000'> <input type='submit' value='Enviar'> </form> </body><style></style></html>");
     });
 
     // define led bright
     server.on("/led-bright", HTTP_POST, []() {
       String value = server.arg("plain");
+      value.replace("v=", "");
+      value.trim();
 
       Serial.print("Value from led-bright endpoint: ");
       Serial.println(value);
@@ -80,11 +82,13 @@ void setup_routing() {
     // define bright auto ajust
     server.on("/led-auto-bright", HTTP_POST, []() {
       String value = server.arg("plain");
+      value.replace("v=", "");
+      value.trim();
 
-      Serial.print("Value from led-bright endpoint");
-      Serial.println(value);
+      Serial.print("Value from led-auto-bright endpoint:"+value+"aa");
+      Serial.println();
 
-      if (value == "true") {
+      if (value.equals("true")) {
         Serial.println("Enter on led bright AUTOMATIC mode");
         is_automatic_bright = true;  
       } else {
@@ -98,6 +102,8 @@ void setup_routing() {
     // active and inactive motion detection mode
     server.on("/motion-detection", HTTP_POST, []() {
       String value = server.arg("plain");
+      value.replace("v=", "");
+      value.trim();
 
       Serial.print("is motion detection active");
       Serial.println(value);
@@ -108,7 +114,8 @@ void setup_routing() {
         onMotionDetected();
       } else {
         Serial.println("Out of motion detection mode");
-        is_motion_detection_active = false;  
+        is_motion_detection_active = false; 
+        is_automatic_bright = true; 
       }
 
       server.send(200, "text/plain", value);
@@ -117,6 +124,9 @@ void setup_routing() {
     // define motion detection delay
     server.on("/motion-detection-delay", HTTP_POST, []() {
       String value = server.arg("plain");
+      value.replace("v=", "");
+      value.trim();
+      
 
       Serial.print("Motion detection new delay is: ");
       Serial.println(value);
