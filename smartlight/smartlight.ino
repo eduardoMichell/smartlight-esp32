@@ -59,7 +59,7 @@ void setup_routing() {
 
     // app root page
     server.on("/", HTTP_GET, []() {
-      server.send(200, "text/html","<!DOCTYPE html><html lang='pt-BR'><head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width, initial-scale=1'> <title>Smart Light</title></head><body> <iframe name='dummyframe' id='dummyframe' style='display: none;'></iframe> <div> <h1> Smart Light </h1> <label> Controle sua lâmpada aqui! </label> </div><br/> <form action='http://192.168.1.1/led-bright' method='post' target='dummyframe' enctype='text/plain'> <label for='ledBright'>Luminosidade:</label><br><input type='number' id='ledBright' name='v' min='0' max='1024' value='1024'> <input type='submit' value='Enviar'> </form> <br/> <form action='http://192.168.1.1/led-auto-bright' method='post' target='dummyframe' enctype='text/plain'> <button type='submit' name='v' value='true'>Ativar ajuste automatico da luminosidade</button> </form> <br/> <form action='http://192.168.1.1/motion-detection' method='post' target='dummyframe' enctype='text/plain'> <button type='submit' name='v' value='true'>Ativar o controle de presença</button> <button type='submit' name='v' value='false'>Desativar o controle de presença</button> </form> <br/> <form action='http://192.168.1.1/motion-detection-delay' method='post' target='dummyframe' enctype='text/plain'> <label for='detectionDelay'>Intervalo para verificação de presença:</label><br><input type='number' id='detectionDelay' name='v' min='0' max='60000' value='5000'> <input type='submit' value='Enviar'> </form> </body><style></style></html>");
+      server.send(200, "text/html","<!DOCTYPE html><html lang='pt-BR'><head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width, initial-scale=1'> <title>Smart Light</title></head><body> <iframe name='dummyframe' id='dummyframe' style='display: none;'></iframe> <div> <h1> Smart Light </h1> <label> Controle sua lâmpada aqui! </label> </div><br/> <form action='http://192.168.1.1/led-bright' method='post' target='dummyframe' enctype='text/plain'> <label for='ledBright'>Luminosidade:</label><br><input type='number' id='ledBright' name='v' min='0' max='1024' value='1024'> <input type='submit' value='Enviar'> </form> <br/> <form action='http://192.168.1.1/led-auto-bright' method='post' target='dummyframe' enctype='text/plain'> <button type='submit' name='v' value='true'>Ativar ajuste automatico da luminosidade</button> </form> <br/> <form action='http://192.168.1.1/led-state' method='post' target='dummyframe' enctype='text/plain'> <button type='submit' name='v' value='true'>Ligar Luz</button> <button type='submit' name='v' value='false'>Desligar Luz</button> </form> <br/> <form action='http://192.168.1.1/motion-detection' method='post' target='dummyframe' enctype='text/plain'> <button type='submit' name='v' value='true'>Ativar o controle de presença</button> <button type='submit' name='v' value='false'>Desativar o controle de presença</button> </form> <br/> <form action='http://192.168.1.1/motion-detection-delay' method='post' target='dummyframe' enctype='text/plain'> <label for='detectionDelay'>Intervalo para verificação de presença:</label><br><input type='number' id='detectionDelay' name='v' min='0' max='60000' value='5000'> <input type='submit' value='Enviar'> </form> </body><style></style></html>");
     });
 
     // define led bright
@@ -132,6 +132,25 @@ void setup_routing() {
       Serial.println(value);
 
       motion_check_interval = value.toInt();
+
+      server.send(200, "text/plain", value);
+    });
+
+    // control led state on or off
+    server.on("/led-state", HTTP_POST, []() {
+      String value = server.arg("plain");
+      value.replace("v=", "");
+      value.trim();
+
+      Serial.print("change led to on/off based on bool: ");
+      Serial.println(value);
+
+      if (value == "true") {
+        is_automatic_bright = true;
+      } else {
+        is_automatic_bright = false;
+        led_bright = 0;
+      }
 
       server.send(200, "text/plain", value);
     });
