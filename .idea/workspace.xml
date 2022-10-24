@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="8a4d3293-275b-4a5a-9dab-3e424ffe7047" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esp32_control.html" beforeDir="false" afterPath="$PROJECT_DIR$/esp32_control.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/smartlight/smartlight.ino" beforeDir="false" afterPath="$PROJECT_DIR$/smartlight/smartlight.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webPage.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,14 +30,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/home/edu/rep/ogg",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/edu/rep/smartlight-esp32&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -49,6 +52,11 @@
       <workItem from="1665672536151" duration="89000" />
       <workItem from="1665946120966" duration="369000" />
       <workItem from="1666008301655" duration="155000" />
+      <workItem from="1666029849493" duration="91000" />
+      <workItem from="1666101914559" duration="214000" />
+      <workItem from="1666108237901" duration="599000" />
+      <workItem from="1666271652720" duration="2695000" />
+      <workItem from="1666652752347" duration="11000" />
     </task>
     <servers />
   </component>
